@@ -1,5 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/test/unit_test_parameters.hpp>
+#include <boost/test/utils/runtime/parameter.hpp>
+#include <boost/test/utils/runtime/modifier.hpp>
 #include <boost/filesystem.hpp>
 #include "utils/Parallel.hpp"
 #include "utils/Petsc.hpp"
@@ -44,8 +46,9 @@ bool init_unit_test()
   auto logConfigs = logging::readLogConfFile("log.conf");
   
   if (logConfigs.empty()) { // nothing has been read from log.conf
-    auto logLevel = runtime_config::get<log_level>(runtime_config::btrt_log_level);
-    logging::BackendConfiguration config;
+/*
+    auto logLevel = runtime_config::get<rt::enum_values_list<log_level>>(runtime_config::btrt_log_level);
+
     if (logLevel == log_successful_tests or logLevel == log_test_units)
       config.filter = "%Severity% >= debug";
     if (logLevel == log_messages)
@@ -54,7 +57,10 @@ bool init_unit_test()
       config.filter = "%Severity% >= warning";
     if (logLevel >= log_all_errors)
       config.filter = "%Severity% >= warning"; // log warnings in any case
-    
+*/
+
+    logging::BackendConfiguration config;
+    config.filter = "%Severity% >= warning"; // log warnings in any case
     logConfigs.push_back(config);
   }
 
@@ -67,7 +73,7 @@ bool init_unit_test()
   // Can be overwritten on a per-test or per-suite basis using decators
   // boost::unit_test::decorator::collector::instance() * boost::unit_test::tolerance(0.001);
   * tolerance(1e-9); // Stores the decorator in the collector singleton
-  decorator::collector::instance().store_in(master_suite);
+  decorator::collector_t::instance().store_in(master_suite);
   
   return true;
 }

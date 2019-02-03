@@ -72,6 +72,7 @@ find_package (Threads REQUIRED)
 find_package(Boost 1.60.0 REQUIRED
   COMPONENTS filesystem log log_setup program_options system thread unit_test_framework)
 add_definitions(-DBOOST_ALL_DYN_LINK -DBOOST_ASIO_ENABLE_OLD_SERVICES)
+include_directories(${Boost_INCLUDE_DIRS})
 
 
 find_package(Eigen3 3.2 REQUIRED)
